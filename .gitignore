@@ -1,0 +1,10 @@
+node_modules
+dist
+.env
+.env.local
+.DS_Store
+*.log
+apps/habit/dist
+apps/habit/node_modules
+apps/finance/dist
+apps/finance/node_modules

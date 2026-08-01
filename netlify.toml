@@ -1,0 +1,17 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# SPA fallback per app — biar refresh/deep-link di /habit/... dan /finance/...
+# (termasuk rute React Router seperti /finance/login) tetap kebuka, bukan 404.
+# Netlify selalu coba serve file statis yang cocok dulu sebelum redirect ini
+# dipakai, jadi asset (JS/CSS) di masing-masing app tetap ke-load normal.
+[[redirects]]
+  from = "/habit/*"
+  to = "/habit/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/finance/*"
+  to = "/finance/index.html"
+  status = 200
