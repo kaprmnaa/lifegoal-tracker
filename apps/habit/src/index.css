@@ -214,6 +214,21 @@ a { color: inherit; }
 }
 
 /* -------------------- Habit list / card -------------------- */
+.habit-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.habit-group-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-faint);
+  margin-bottom: 10px;
+  padding-left: 2px;
+}
+
 .habit-list {
   display: flex;
   flex-direction: column;
