@@ -19,15 +19,17 @@ export default function Sidebar() {
         <button className="nav-item active">
           ◆ Dashboard
         </button>
-        <button className="nav-item" onClick={() => setSecurityOpen(true)}>
-          🔒 Keamanan
-        </button>
       </nav>
 
-      <div className="wallet-chip">
-        <div className="label">Signed in as</div>
-        <div className="value">@{profile?.username || '...'}</div>
-        <button className="logout-btn" onClick={signOut}>Logout</button>
+      <div className="sidebar-bottom">
+        <button className="icon-btn-side" onClick={() => setSecurityOpen(true)} title="Keamanan" aria-label="Keamanan">
+          🔒
+        </button>
+        <div className="wallet-chip">
+          <div className="label">Signed in as</div>
+          <div className="value">@{profile?.username || '...'}</div>
+          <button className="logout-btn" onClick={signOut}>Logout</button>
+        </div>
       </div>
 
       {securityOpen && <SecurityModal lock={lock} onClose={() => setSecurityOpen(false)} />}
