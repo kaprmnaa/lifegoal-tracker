@@ -1,14 +1,18 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
+import { AppLockProvider, useAppLock } from './context/AppLockContext.jsx'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import Loader from './components/Loader'
+import LockScreen from './components/LockScreen.jsx'
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth()
+  const lock = useAppLock()
   if (loading) return <Loader />
   if (!user) return <Navigate to="/login" replace />
+  if (lock.isLocked) return <LockScreen lock={lock} />
   return children
 }
 
@@ -34,7 +38,9 @@ export default function App() {
   return (
     <BrowserRouter basename="/finance">
       <AuthProvider>
-        <Routed />
+        <AppLockProvider>
+          <Routed />
+        </AppLockProvider>
       </AuthProvider>
     </BrowserRouter>
   )

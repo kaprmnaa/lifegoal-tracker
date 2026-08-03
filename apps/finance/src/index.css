@@ -618,3 +618,119 @@ a { color: inherit; }
   stroke-linecap: round;
   animation: spin-slow 1s linear infinite;
 }
+
+/* ---------- App Lock (PIN / Face ID) ---------- */
+.lock-screen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  gap: 22px;
+  background: var(--bg);
+}
+.lock-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+}
+.lock-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--mint), var(--cyan));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  margin-bottom: 10px;
+  color: #041014;
+}
+.lock-header h2 { font-family: var(--font-display); font-size: 18px; color: var(--text); }
+.lock-header p { color: var(--text-dim); font-size: 13px; }
+
+.pin-dots { display: flex; gap: 14px; }
+.pin-dots.shake { animation: shake-x .4s ease; }
+@keyframes shake-x {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(8px); }
+  60% { transform: translateX(-6px); }
+  80% { transform: translateX(6px); }
+}
+.pin-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-strong);
+  background: transparent;
+}
+.pin-dot.filled { background: var(--mint); border-color: var(--mint); box-shadow: 0 0 8px var(--mint); }
+
+.lock-info {
+  color: var(--mint);
+  font-size: 12.5px;
+  background: var(--mint-dim);
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+}
+
+.pin-pad {
+  display: grid;
+  grid-template-columns: repeat(3, 64px);
+  gap: 14px;
+}
+.pin-key {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 20px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.pin-key:active { background: var(--bg-elevated); }
+.pin-key-back { font-size: 17px; color: var(--text-dim); border-color: transparent; background: transparent; }
+
+.lock-bio-btn { padding: 12px 20px; }
+
+.security-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+}
+.security-row-title { font-size: 14px; font-weight: 600; color: var(--text); }
+.security-row-sub { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+
+.pin-setup-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin: 4px 0 6px;
+}
+.pin-setup-block label { font-size: 12.5px; color: var(--text-dim); }
+.pin-setup-block input {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 18px;
+  letter-spacing: 6px;
+  color: var(--text);
+  text-align: center;
+}

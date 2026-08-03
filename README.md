@@ -21,6 +21,32 @@ lifegoal/
   vercel.json    ← 1 project Vercel, build kedua app, routing /habit & /finance
 ```
 
+## Kunci Aplikasi — PIN & Face ID / Touch ID
+
+Kedua app (Pulse dan FinanceTrack) sekarang punya lapisan kunci tambahan di atas
+login Supabase yang sudah ada — mirip fitur "App Lock" di banking app.
+
+- Tap ikon **🔒** di Topbar (Pulse) atau menu **🔒 Keamanan** di Sidebar (FinanceTrack)
+  untuk aktifkan.
+- **PIN 6 digit** — selalu bisa dipakai di device manapun.
+- **Face ID / Touch ID** — pakai WebAuthn platform authenticator (API browser bawaan,
+  bukan integrasi native). Tombol "Aktifkan" cuma muncul kalau device/browser
+  mendukung (terdeteksi otomatis).
+- Begitu salah satu diaktifkan, app akan minta buka kunci setiap kali dibuka (termasuk
+  saat dibuka dari ikon Home Screen di iOS), dan otomatis terkunci lagi kalau app
+  disembunyikan >5 menit lalu dibuka kembali.
+- **PIN dan credential Face ID/Touch ID disimpan HANYA di localStorage perangkat itu
+  sendiri** — tidak dikirim ke Supabase atau server manapun. Ini murni gerbang lokal
+  di atas sesi login yang sudah ada, bukan pengganti sistem login. Konsekuensinya:
+  ganti device atau hapus data browser → perlu disetel ulang; dan tidak ada cara
+  "reset PIN dari server" kalau lupa (tinggal hapus PIN dari menu Keamanan kalau masih
+  bisa masuk, atau clear site data dari browser kalau benar-benar lupa).
+- Kenapa bukan Face ID "native": website/PWA tidak diberi akses langsung ke Face ID
+  oleh iOS — satu-satunya jalan resmi adalah WebAuthn, yang memicu prompt Face ID/Touch
+  ID asli lewat browser. Dukungannya bagus di Safari/PWA standalone sejak iOS 16-an ke
+  atas; kalau device/browser tidak mendukung, opsi Face ID otomatis disembunyikan dan
+  PIN tetap jadi cadangan utama.
+
 ## Fitur baru di Pulse (dari habit tracker lama kamu)
 
 Diambil dari project habit tracker lama kamu, dipasang ke tema Pulse yang sekarang

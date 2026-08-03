@@ -3,6 +3,7 @@ import { useAuth } from './context/AuthContext.jsx'
 import { useHabits } from './hooks/useHabits.js'
 import { useTomorrowPlans } from './hooks/useTomorrowPlans.js'
 import { useGoals } from './hooks/useGoals.js'
+import { useAppLock } from './hooks/useAppLock.js'
 import Topbar from './components/Layout.jsx'
 import HabitList from './components/HabitList.jsx'
 import HabitFormModal from './components/HabitFormModal.jsx'
@@ -10,11 +11,14 @@ import HabitDetailModal from './components/HabitDetailModal.jsx'
 import TomorrowPlan from './components/TomorrowPlan.jsx'
 import Goals from './components/Goals.jsx'
 import Login from './components/Login.jsx'
+import LockScreen from './components/LockScreen.jsx'
+import SecurityModal from './components/SecurityModal.jsx'
 import { computeConsistency } from './utils/consistency.js'
 import { todayISO } from './utils/dateUtils.js'
 
 export default function App() {
   const { user, profile, loading: authLoading, signOut } = useAuth()
+  const lock = useAppLock()
 
   if (authLoading) {
     return <div className="center-loading">Memuat<span className="loading-dot" style={{ marginLeft: 6 }} /></div>
@@ -28,10 +32,18 @@ export default function App() {
     )
   }
 
-  return <Dashboard username={profile?.username} onLogout={signOut} />
+  if (lock.isLocked) {
+    return (
+      <div className="app-shell">
+        <LockScreen lock={lock} />
+      </div>
+    )
+  }
+
+  return <Dashboard username={profile?.username} onLogout={signOut} lock={lock} />
 }
 
-function Dashboard({ username, onLogout }) {
+function Dashboard({ username, onLogout, lock }) {
   const {
     habits,
     todosByHabit,
@@ -70,6 +82,7 @@ function Dashboard({ username, onLogout }) {
   const [formOpen, setFormOpen] = useState(false)
   const [editingHabit, setEditingHabit] = useState(null)
   const [activeHabitId, setActiveHabitId] = useState(null)
+  const [securityOpen, setSecurityOpen] = useState(false)
 
   const activeHabit = habits.find((h) => h.id === activeHabitId) || null
 
@@ -111,7 +124,7 @@ function Dashboard({ username, onLogout }) {
 
   return (
     <div className="app-shell">
-      <Topbar username={username} onLogout={onLogout} />
+      <Topbar username={username} onLogout={onLogout} onOpenSecurity={() => setSecurityOpen(true)} />
 
       <div className="content">
         <div className="overview">
@@ -200,6 +213,10 @@ function Dashboard({ username, onLogout }) {
           onToggleTodo={toggleTodo}
           onDeleteTodo={deleteTodo}
         />
+      )}
+
+      {securityOpen && (
+        <SecurityModal lock={lock} onClose={() => setSecurityOpen(false)} />
       )}
     </div>
   )
