@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { createPortal } from 'react-dom'
 
 export default function SecurityModal({ lock, onClose }) {
   const [step, setStep] = useState('idle') // idle | setPin1 | setPin2
@@ -63,7 +64,7 @@ export default function SecurityModal({ lock, onClose }) {
     }
   }
 
-  return (
+  return createPortal(
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-title">Keamanan Aplikasi</div>
@@ -134,6 +135,7 @@ export default function SecurityModal({ lock, onClose }) {
           <button className="btn btn-primary" onClick={onClose}>Selesai</button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
