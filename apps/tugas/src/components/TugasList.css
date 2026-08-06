@@ -1,0 +1,200 @@
+.tugas-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  color: var(--ink-soft);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 6px 0;
+}
+
+.back-btn:hover {
+  color: var(--ink);
+}
+
+.tugas-header-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.tugas-header-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent, #3d8bfd);
+  flex-shrink: 0;
+}
+
+.tugas-header-title h2 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  margin: 0;
+}
+
+.tugas-board {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 22px 18px;
+  margin-top: 24px;
+}
+
+.sticky-note {
+  position: relative;
+  background: var(--card);
+  border-radius: 4px 4px 10px 10px;
+  padding: 18px 16px 14px;
+  box-shadow: var(--shadow-card);
+  transform: rotate(var(--rot, 0deg));
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  border-top: 6px solid var(--ink-faint);
+}
+
+.sticky-note:hover {
+  transform: rotate(var(--rot, 0deg)) translateY(-3px);
+  box-shadow: var(--shadow-lift);
+}
+
+.sticky-note.urgency-overdue {
+  border-top-color: var(--danger);
+}
+.sticky-note.urgency-today {
+  border-top-color: var(--warning);
+}
+.sticky-note.urgency-soon {
+  border-top-color: #ffc93c;
+}
+.sticky-note.urgency-later {
+  border-top-color: #3d8bfd;
+}
+.sticky-note.urgency-none {
+  border-top-color: var(--ink-faint);
+}
+.sticky-note.is-done {
+  border-top-color: var(--success);
+  opacity: 0.72;
+}
+
+.sticky-delete {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  background: var(--paper);
+  color: var(--ink-faint);
+  font-size: 10px;
+  opacity: 0;
+  transition: opacity 0.15s, background 0.15s, color 0.15s;
+}
+
+.sticky-note:hover .sticky-delete {
+  opacity: 1;
+}
+
+.sticky-delete:hover {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+.sticky-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  cursor: pointer;
+  padding-right: 18px;
+}
+
+.sticky-check input[type='checkbox'] {
+  margin-top: 3px;
+  width: 17px;
+  height: 17px;
+  accent-color: var(--ink);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.sticky-judul {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15.5px;
+  line-height: 1.35;
+  color: var(--ink);
+}
+
+.is-done .sticky-judul {
+  text-decoration: line-through;
+  color: var(--ink-faint);
+}
+
+.sticky-desc {
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+  margin: 8px 0 0;
+}
+
+.sticky-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.sticky-deadline {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-faint);
+}
+
+.sticky-badge {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 100px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.badge-overdue {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+.badge-today {
+  background: var(--warning-bg);
+  color: var(--warning);
+}
+
+.badge-soon {
+  background: #fff8e0;
+  color: #a67c00;
+}
+
+.tugas-done-section {
+  margin-top: 30px;
+}
+
+.tugas-done-section summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--ink-soft);
+  font-size: 14px;
+  padding: 6px 0;
+}
+
+.tugas-done-section summary:hover {
+  color: var(--ink);
+}

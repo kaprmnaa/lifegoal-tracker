@@ -15,3 +15,8 @@
   from = "/finance/*"
   to = "/finance/index.html"
   status = 200
+
+[[redirects]]
+  from = "/tugas/*"
+  to = "/tugas/index.html"
+  status = 200

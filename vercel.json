@@ -5,6 +5,8 @@
     { "source": "/habit", "destination": "/habit/index.html" },
     { "source": "/habit/(.*)", "destination": "/habit/index.html" },
     { "source": "/finance", "destination": "/finance/index.html" },
-    { "source": "/finance/(.*)", "destination": "/finance/index.html" }
+    { "source": "/finance/(.*)", "destination": "/finance/index.html" },
+    { "source": "/tugas", "destination": "/tugas/index.html" },
+    { "source": "/tugas/(.*)", "destination": "/tugas/index.html" }
   ]
 }

@@ -5,6 +5,7 @@
   "scripts": {
     "build": "bash build.sh",
     "dev:habit": "npm --prefix apps/habit run dev",
-    "dev:finance": "npm --prefix apps/finance run dev"
+    "dev:finance": "npm --prefix apps/finance run dev",
+    "dev:tugas": "npm --prefix apps/tugas run dev"
   }
 }

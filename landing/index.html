@@ -17,6 +17,7 @@
         --text-dim: #8B95A5;
         --ember: #FF5A36;
         --cyan: #2CC9FF;
+        --violet: #8B5CF6;
       }
       * { box-sizing: border-box; }
       html, body {
@@ -69,6 +70,7 @@
       a.card:hover { transform: translateY(-2px); }
       a.card.habit:hover { border-color: var(--ember); }
       a.card.finance:hover { border-color: var(--cyan); }
+      a.card.tugas:hover { border-color: var(--violet); }
       .icon {
         width: 46px;
         height: 46px;
@@ -81,6 +83,7 @@
       }
       .habit .icon { background: rgba(255,90,54,0.14); }
       .finance .icon { background: rgba(44,201,255,0.14); }
+      .tugas .icon { background: rgba(139,92,246,0.14); }
       .card-title { font-family: 'Sora', sans-serif; font-weight: 700; font-size: 15px; }
       .card-desc { color: var(--text-dim); font-size: 12.5px; margin-top: 2px; }
     </style>
@@ -102,6 +105,13 @@
           <div>
             <div class="card-title">FinanceTrack</div>
             <div class="card-desc">Lacak pengeluaran seperti ledger on-chain</div>
+          </div>
+        </a>
+        <a class="card tugas" href="/tugas">
+          <div class="icon">📋</div>
+          <div>
+            <div class="card-title">Papan Tugas SMA</div>
+            <div class="card-desc">Reminder tugas sekolah per mata pelajaran</div>
           </div>
         </a>
       </div>

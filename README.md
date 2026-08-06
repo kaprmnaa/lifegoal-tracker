@@ -1,12 +1,13 @@
 # lifegoal.direction — monorepo
 
-Menggabungkan dua app React + Vite + Supabase dalam satu domain:
+Menggabungkan tiga app React + Vite + Supabase dalam satu domain:
 
 - **`/habit`** → Pulse (habit tracker) — tema & fitur tidak diubah
 - **`/finance`** → FinanceTrack (expense tracker) — tema & fitur tidak diubah
-- **`/`** → halaman landing kecil yang menautkan ke keduanya
+- **`/tugas`** → Papan Tugas SMA (reminder tugas sekolah per mapel)
+- **`/`** → halaman landing kecil yang menautkan ke ketiganya
 
-Kedua app tetap 100% independen (bundle, state, dan routing masing-masing terpisah) —
+Ketiga app tetap 100% independen (bundle, state, dan routing masing-masing terpisah) —
 digabung hanya di level deploy/hosting, bukan di kode. Jadi tidak ada risiko tema atau
 CSS yang satu "bocor" ke yang lain.
 
@@ -15,10 +16,11 @@ lifegoal/
   apps/
     habit/      ← Pulse, dari project sebelumnya (base path diubah ke /habit/)
     finance/    ← FinanceTrack kamu (base path diubah ke /finance/, router basename /finance)
+    tugas/      ← Papan Tugas SMA (base path diubah ke /tugas/)
   landing/
     index.html  ← halaman pemilihan app di root domain
-  build.sh       ← build kedua app lalu susun ke dist/habit, dist/finance, dist/index.html
-  vercel.json    ← 1 project Vercel, build kedua app, routing /habit & /finance
+  build.sh       ← build ketiga app lalu susun ke dist/habit, dist/finance, dist/tugas, dist/index.html
+  vercel.json    ← 1 project Vercel, build ketiga app, routing /habit, /finance & /tugas
 ```
 
 ## Kunci Aplikasi — PIN & Face ID / Touch ID
@@ -27,7 +29,8 @@ Kedua app (Pulse dan FinanceTrack) sekarang punya lapisan kunci tambahan di atas
 login Supabase yang sudah ada — mirip fitur "App Lock" di banking app.
 
 - Tap ikon **🔒** di Topbar (Pulse) atau menu **🔒 Keamanan** di Sidebar (FinanceTrack)
-  untuk aktifkan.
+  untuk aktifkan. (Papan Tugas SMA belum punya App Lock ini — masih pakai login
+  Supabase biasa.)
 - **PIN 6 digit** — selalu bisa dipakai di device manapun.
 - **Face ID / Touch ID** — pakai WebAuthn platform authenticator (API browser bawaan,
   bukan integrasi native). Tombol "Aktifkan" cuma muncul kalau device/browser
@@ -78,21 +81,22 @@ Tabel baru/berubah di `apps/habit/supabase/schema.sql`:
 supaya kolom & tabel barunya aktif (aman dijalankan ulang — semua pakai
 `if not exists` / `add column if not exists`).
 
-## Login ke Pulse dan FinanceTrack sekaligus
+## Login ke Pulse, FinanceTrack, dan Papan Tugas SMA sekaligus
 
-Karena kedua app sekarang satu domain (`lifegoal.direction.my.id`), browser
-menyimpan sesi login keduanya di `localStorage` **origin yang sama**. Supaya
+Karena ketiga app sekarang satu domain (`lifegoal.direction.my.id`), browser
+menyimpan sesi login ketiganya di `localStorage` **origin yang sama**. Supaya
 tidak saling menimpa, masing-masing Supabase client diberi `storageKey`
 unik:
 
 - Pulse → `pulse-hbits-auth` (`apps/habit/src/lib/supabaseClient.js`)
 - FinanceTrack → `financetrack-auth` (`apps/finance/src/lib/supabaseClient.js`)
+- Papan Tugas SMA → `tugassma-auth` (`apps/tugas/src/lib/supabaseClient.js`)
 
-Dengan ini kamu bisa login ke FinanceTrack di satu tab dan Pulse di tab lain
-(atau bahkan bolak-balik di tab yang sama) — keduanya tetap login sendiri-
-sendiri tanpa error atau saling logout. Ini murni soal penyimpanan sesi di
-browser; akun/tabel usernya memang sudah terpisah dari awal (`hbits_profiles`
-vs `financetrack_profiles`).
+Dengan ini kamu bisa login ke ketiga app di tab berbeda (atau bahkan
+bolak-balik di tab yang sama) — semuanya tetap login sendiri-sendiri tanpa
+error atau saling logout. Ini murni soal penyimpanan sesi di browser;
+akun/tabel usernya memang sudah terpisah dari awal (`hbits_profiles` vs
+`financetrack_profiles` vs `tugassma_profiles`).
 
 ## Kenapa signup habit sempat gagal 500
 
@@ -113,11 +117,12 @@ berbagi project Supabase yang sama tidak akan lagi saling menjatuhkan.
 ## 1. Setup lokal
 
 Masing-masing app tetap punya `.env` sendiri (isi dengan kredensial Supabase — boleh
-project yang sama untuk keduanya, seperti sekarang):
+project yang sama untuk ketiganya, seperti sekarang):
 
 ```bash
 cp apps/habit/.env.example apps/habit/.env
 cp apps/finance/.env.example apps/finance/.env
+cp apps/tugas/.env.example apps/tugas/.env
 # isi VITE_SUPABASE_URL & VITE_SUPABASE_ANON_KEY di masing-masing
 ```
 
@@ -126,22 +131,30 @@ Jalankan salah satu app untuk dev (port beda supaya bisa jalan bareng):
 ```bash
 npm run dev:habit     # http://localhost:5173
 npm run dev:finance   # http://localhost:5174
+npm run dev:tugas     # http://localhost:5175
 ```
 
 ## 2. Setup Supabase
 
-Kalau kedua app pakai **project Supabase yang sama** (seperti sekarang):
+Kalau ketiga app pakai **project Supabase yang sama** (seperti sekarang):
 
 1. Jalankan `apps/habit/supabase/schema.sql` (tabel `hbits_*`).
 2. Jalankan `apps/finance/supabase/schema.sql` (tabel `financetrack_*`, sudah termasuk
    fix trigger di atas).
-3. Authentication → Providers → Email tetap aktif; matikan **"Confirm email"**
-   (kedua app pakai email dummy berbasis username, bukan email asli).
+3. Jalankan `apps/tugas/supabase/schema.sql` (tabel `tugassma_*`).
+4. Authentication → Providers → Email tetap aktif; matikan **"Confirm email"**
+   (ketiga app pakai email dummy berbasis username, bukan email asli).
 
-Kedua app punya sistem auth/username terpisah (tabel profil berbeda: `hbits_profiles`
-vs `financetrack_profiles`), jadi **akun di Pulse dan FinanceTrack tidak saling
-terhubung** — login beda, meskipun 1 project Supabase. Kalau nanti mau akun tunggal
-untuk kedua app, itu perubahan terpisah (bisa didiskusikan lagi).
+Ketiga app punya sistem auth/username terpisah (tabel profil berbeda: `hbits_profiles`,
+`financetrack_profiles`, `tugassma_profiles`), jadi **akun di Pulse, FinanceTrack, dan
+Papan Tugas SMA tidak saling terhubung** — login beda-beda, meskipun 1 project
+Supabase. Kalau nanti mau akun tunggal untuk ketiganya, itu perubahan terpisah (bisa
+didiskusikan lagi).
+
+Catatan yang sama dengan poin "Kenapa signup habit sempat gagal 500" di bawah juga
+berlaku untuk Papan Tugas SMA: proses signup-nya sengaja tidak mengirim `username`
+lewat user metadata Supabase Auth, supaya tidak ikut memicu trigger
+`financetrack_on_auth_user_created` milik FinanceTrack di project yang sama.
 
 ## 3. Deploy — pilih salah satu: Vercel atau Netlify
 
@@ -154,11 +167,11 @@ root, tidak saling ganggu — masing-masing platform cuma baca file konfigurasin
    `apps/finance` sendiri-sendiri).
 2. Di Vercel, **New Project** → import repo ini.
 3. Vercel akan otomatis pakai konfigurasi dari `vercel.json` di root:
-   - `buildCommand`: `npm run build` (menjalankan `build.sh` → build kedua app →
+   - `buildCommand`: `npm run build` (menjalankan `build.sh` → build ketiga app →
      susun ke `dist/`)
    - `outputDirectory`: `dist`
 4. Environment Variables (Project Settings → Environment Variables) — cukup 2, dipakai
-   bareng oleh kedua app karena nama variabelnya sama persis di keduanya:
+   bareng oleh ketiga app karena nama variabelnya sama persis di ketiganya:
    - `VITE_SUPABASE_URL`
    - `VITE_SUPABASE_ANON_KEY`
 5. Deploy.
@@ -182,7 +195,7 @@ root, tidak saling ganggu — masing-masing platform cuma baca file konfigurasin
 3. Netlify baca `netlify.toml` di root otomatis:
    - Build command: `npm run build`
    - Publish directory: `dist`
-   - Redirect rules untuk `/habit/*` dan `/finance/*` sudah diatur di sana, supaya
+   - Redirect rules untuk `/habit/*`, `/finance/*`, dan `/tugas/*` sudah diatur di sana, supaya
      refresh/deep-link (termasuk rute React Router di FinanceTrack seperti
      `/finance/login`) tetap kebuka, bukan 404.
 4. Site settings → **Environment variables** → tambahkan 2 variable yang sama:
@@ -211,15 +224,17 @@ root, tidak saling ganggu — masing-masing platform cuma baca file konfigurasin
    - `lifegoal.direction.my.id/` → halaman pilihan
    - `lifegoal.direction.my.id/habit` → Pulse
    - `lifegoal.direction.my.id/finance` → FinanceTrack
+   - `lifegoal.direction.my.id/tugas` → Papan Tugas SMA
 
 ## Catatan penting
 
 - Kalau butuh update salah satu app saja (misal cuma Pulse), tetap push dari repo
   gabungan ini — Vercel akan rebuild keduanya (build cepat, tidak masalah untuk project
   sekecil ini).
-- Vite `base` di `apps/habit/vite.config.js` dan `apps/finance/vite.config.js` sudah
-  diset ke `/habit/` dan `/finance/` — **jangan dihapus**, itu yang bikin asset (JS/CSS)
-  ke-resolve dengan benar di bawah subpath.
+- Vite `base` di `apps/habit/vite.config.js`, `apps/finance/vite.config.js`, dan
+  `apps/tugas/vite.config.js` sudah diset ke `/habit/`, `/finance/`, dan `/tugas/` —
+  **jangan dihapus**, itu yang bikin asset (JS/CSS) ke-resolve dengan benar di bawah
+  subpath.
 - React Router di FinanceTrack sudah diberi `basename="/finance"` di `App.jsx` — kalau
   nanti nambah route baru, pemanggilan `<Link to="/...">` tetap relatif ke basename ini
   secara otomatis, tidak perlu diawali `/finance` manual.
